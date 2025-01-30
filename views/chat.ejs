@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SportBot Chat</title>
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
+    <style>
+      /* Custom scrollbar styles */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      .chat-bubble {
+        max-width: 75%;
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-size: 1rem;
+        margin-bottom: 12px;
+        word-wrap: break-word;
+      }
+
+      .user-message {
+        background-color: #d1f7d1;
+        color: #3178c6;
+        text-align: left;
+        margin-left: 0;
+      }
+
+      .ai-message {
+        background-color: #ffffff;
+        color: #333;
+        text-align: right;
+        margin-right: 0;
+      }
+
+      .error-message {
+        background-color: #f8d7da;
+        color: #842029;
+        text-align: center;
+        margin-right: 0;
+      }
+
+      .chat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #3178c6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 2.2rem;
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-gradient-to-r from-blue-50 to-purple-50 font-sans flex items-center justify-center min-h-screen"
+  >
+    <!-- Full screen container -->
+    <div class="flex w-full h-full p-0">
+      <!-- Leftmost Image -->
+      <img
+        src="/chat.jpg"
+        alt="Character"
+        class="h-full w-auto object-cover absolute left-0"
+      />
+
+      <!-- Right Side: SportBot Container -->
+      <div class="ml-auto w-2/3 p-6">
+        <!-- SportBot Heading -->
+        <div
+          class="bg-yellow-300 text-blue-800 font-bold py-2 px-4 rounded-lg shadow-lg text-2xl w-fit mb-4 mt-[30px] ml-[380px]"
+        >
+          SportifyZone Bot
+        </div>
+
+        <!-- Chat Container -->
+        <div
+          class="bg-white shadow-xl rounded-lg w-full max-w-3xl p-6 mt-[50px] ml-[390px]"
+        >
+          <h1 class="text-4xl font-semibold text-center text-blue-600 mb-8">
+            Generative AI Chat
+          </h1>
+
+          <!-- Chat History Container -->
+          <div
+            id="chatHistory"
+            class="h-96 overflow-y-auto p-4 bg-gray-100 rounded-lg border border-gray-300 mb-6"
+          >
+            <!-- Messages will be dynamically inserted here -->
+          </div>
+
+          <!-- Input Area -->
+          <div class="flex items-center space-x-4">
+            <input
+              id="userInput"
+              type="text"
+              class="flex-grow p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg placeholder-gray-500"
+              placeholder="Ask me anything..."
+            />
+            <button
+              onclick="sendMessage()"
+              class="bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <i class="fas fa-paper-plane"></i> Send
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript to Handle the Chat Functionality -->
+    <!-- Frontend HTML (no changes needed here) -->
+
+    <script>
+      async function sendMessage() {
+        const prompt = document.getElementById("userInput").value;
+        if (!prompt) return;
+
+        document.getElementById("userInput").value = "";
+        addMessageToChatHistory(
+          "You",
+          prompt,
+          "user-message",
+          "left",
+          "user-icon"
+        );
+
+        try {
+          const response = await fetch("http://localhost:3002/api/chat", {
+            // Make sure the endpoint is `/api/chat`
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prompt }),
+          });
+
+          const result = await response.json();
+          const aiMessage = result.message;
+
+          addMessageToChatHistory(
+            "AI",
+            aiMessage,
+            "ai-message",
+            "right",
+            "ai-icon"
+          );
+        } catch (error) {
+          console.error("Error during chat session:", error);
+          addMessageToChatHistory(
+            "AI",
+            "Sorry, something went wrong. Please try again.",
+            "error-message",
+            "center",
+            "ai-icon"
+          );
+        }
+      }
+
+      function addMessageToChatHistory(
+        sender,
+        message,
+        messageClass,
+        alignment,
+        iconClass
+      ) {
+        const chatHistory = document.getElementById("chatHistory");
+        const messageDiv = document.createElement("div");
+        const iconDiv = document.createElement("div");
+        const bubbleDiv = document.createElement("div");
+
+        bubbleDiv.classList.add("chat-bubble", messageClass);
+        bubbleDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+
+        iconDiv.classList.add("chat-icon", iconClass);
+        if (iconClass === "user-icon") {
+          iconDiv.innerHTML = `<i class="fas fa-user"></i>`;
+        } else if (iconClass === "ai-icon") {
+          iconDiv.innerHTML = `<i class="fas fa-robot"></i>`;
+        }
+
+        const containerDiv = document.createElement("div");
+        containerDiv.classList.add(
+          "flex",
+          alignment === "left" ? "justify-start" : "justify-end",
+          "space-x-4",
+          "items-start"
+        );
+
+        containerDiv.appendChild(iconDiv);
+        containerDiv.appendChild(bubbleDiv);
+
+        chatHistory.appendChild(containerDiv);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      }
+    </script>
+  </body>
+</html>

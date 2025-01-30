@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sports Assistant</title>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEnQQgBPWR5F6TMiETtuSy5QEmR4zQ7Mk&libraries=places&callback=initMap"
+      async
+      defer
+    ></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        height: 500px;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 30px;
+        color: #333;
+      }
+
+      .search-bar {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .search-bar input {
+        padding: 10px;
+        font-size: 16px;
+        width: 60%;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      .search-bar button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .search-bar button:hover {
+        background-color: #45a049;
+      }
+
+      .venue-list {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .venue-card {
+        background-color: white;
+        padding: 20px;
+        margin: 10px;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        width: 200px;
+        text-align: center;
+        transition: transform 0.2s;
+      }
+
+      .venue-card:hover {
+        transform: scale(1.05);
+      }
+
+      .venue-card img {
+        max-width: 100%;
+        border-radius: 5px;
+      }
+
+      .venue-card h3 {
+        font-size: 18px;
+        margin-top: 10px;
+        color: #333;
+      }
+
+      .venue-card p {
+        color: #777;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">Sports Assistant</div>
+      <div class="search-bar">
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Search for sports venues"
+        />
+        <button onclick="searchVenues()">Search</button>
+      </div>
+
+      <div id="map"></div>
+      <div class="venue-list" id="venue-list"></div>
+    </div>
+
+    <script>
+      let map;
+      let service;
+      let infowindow;
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 37.7749, lng: -122.4194 },
+          zoom: 13,
+        });
+        infowindow = new google.maps.InfoWindow();
+        service = new google.maps.places.PlacesService(map);
+      }
+
+      function searchVenues() {
+        const searchQuery = document.getElementById("search-input").value;
+        const request = {
+          query: searchQuery,
+          fields: [
+            "name",
+            "geometry",
+            "photos",
+            "rating",
+            "user_ratings_total",
+          ],
+        };
+
+        service.findPlaceFromQuery(request, (results, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            displayVenues(results);
+          }
+        });
+      }
+
+      function displayVenues(venues) {
+        const venueList = document.getElementById("venue-list");
+        venueList.innerHTML = "";
+
+        venues.forEach((venue) => {
+          const venueCard = document.createElement("div");
+          venueCard.classList.add("venue-card");
+
+          const venueImage = venue.photos
+            ? venue.photos[0].getUrl({ maxWidth: 200, maxHeight: 200 })
+            : "https://via.placeholder.com/200";
+          const venueName = venue.name;
+          const venueRating = venue.rating || "N/A";
+          const venueAddress = venue.vicinity || "Address not available";
+
+          venueCard.innerHTML = `
+            <img src="${venueImage}" alt="${venueName}" />
+            <h3>${venueName}</h3>
+            <p>Rating: ${venueRating}</p>
+            <p>${venueAddress}</p>
+          `;
+
+          venueList.appendChild(venueCard);
+        });
+      }
+    </script>
+  </body>
+</html>

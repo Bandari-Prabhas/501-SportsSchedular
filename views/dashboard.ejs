@@ -1,184 +1,555 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      main {
+        flex: 1;
+        overflow-y: auto;
+      }
+      footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+      .card:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s ease-in-out;
+      }
+      @keyframes watermark {
+        0% {
+          transform: scale(1);
+          opacity: 0.1;
         }
-        main {
-            flex: 1;
-            overflow-y: auto; 
+        100% {
+          transform: scale(1.5);
+          opacity: 0.4;
         }
-        footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-        .card:hover {
-            transform: scale(1.05); 
-            transition: transform 0.2s ease-in-out; 
-        }
+      }
+      .animate-watermark {
+        animation: watermark 10s infinite linear;
+      }
     </style>
-</head>
-<body>
-    
-<header>
-  <nav class="h-24 border-gray-200 bg-sky-600">
-    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-7">
-      <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <span class="self-center text-3xl font-semibold whitespace-nowrap dark:text-white">Sportopia</span>
+  </head>
+  <body>
+    <header>
+      <nav class="h-24 border-gray-200 bg-gray-100 fixed w-full top-0 z-50">
+        <div
+          class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-1"
+        >
+          <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+            <img
+              src="sport.png"
+              alt="SportifyZone Icon"
+              class="self-center w-[350px] h-[100px] mt-0"
+            />
+          </a>
+          <button
+            data-collapse-toggle="navbar-solid-bg"
+            type="button"
+            class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            aria-controls="navbar-solid-bg"
+            aria-expanded="false"
+          >
+            <span class="sr-only">Open main menu</span>
+            <svg
+              class="w-5 h-5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 17 14"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M1 1h15M1 7h15M1 13h15"
+              />
+            </svg>
+          </button>
+          <div class="hidden w-full md:block md:w-auto" id="navbar-solid-bg">
+            <ul
+              class="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700"
+            >
+              <li>
+                <a
+                  href="/"
+                  class="block py-2 text-2xl px-3 md:p-0 text-gray-700 rounded"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/about"
+                  class="block py-2 text-2xl px-3 md:p-0 text-gray-700 rounded"
+                  >About</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#features"
+                  class="block py-2 text-2xl px-3 md:p-0 text-gray-700 rounded"
+                  >Features</a
+                >
+              </li>
+              <% if (user) { %>
+              <li>
+                <a
+                  href="/logout"
+                  class="block py-2 text-2xl px-3 md:p-0 text-gray-700 rounded"
+                  >Logout</a
+                >
+              </li>
+              <% } else { %>
+              <li>
+                <a
+                  href="/login"
+                  class="block py-2 text-2xl px-3 md:p-0 text-gray-700 rounded"
+                  >Login/Register</a
+                >
+              </li>
+              <% } %>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <section
+      class="relative h-[750px] md:h-[750px] lg:h-[850px]"
+      style="background-color: #1c1c1c"
+    >
+      <!-- Video Background -->
+      <div class="absolute inset-0 overflow-hidden">
+        <video class="w-full h-full object-cover" autoplay loop muted>
+          <source src="/sport.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      <!-- Text on Video -->
+      <div
+        class="relative z-10 flex items-center justify-center h-full text-center text-white"
+      >
+        <!-- Watermark Animation -->
+        <div
+          class="absolute inset-0 flex justify-center items-center opacity-10 animate-pulse text-[10rem] lg:text-[12rem] text-gray-700 pointer-events-none select-none bg-opacity-50 text-red-400"
+        >
+          SportifyZone
+        </div>
+
+        <div class="relative z-10">
+          <h1
+            class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight"
+          >
+            Plan Your <span class="bg-opacity-60 text-red-600">Sports</span>
+          </h1>
+          <p class="text-lg md:text-xl lg:text-2xl mt-4 text-gray-300">
+            Join, Schedule, and Organize like never before.
+          </p>
+        </div>
+      </div>
+
+      <!-- Fixed Assistant Icon -->
+      <a
+        href="/views/chat"
+        class="absolute bottom-10 left-10 flex flex-col items-center space-y-2 cursor-pointer z-20"
+      >
+        <i class="fas fa-robot text-blue-500 text-5xl"></i>
+        <p class="text-lg font-semibold text-gray-300">Assistant</p>
       </a>
-      <button data-collapse-toggle="navbar-solid-bg" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-solid-bg" aria-expanded="false">
-        <span class="sr-only">Open main menu</span>
-        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+
+      <!-- Fixed Location Icon with Text -->
+      <a
+        href="/views/location"
+        class="absolute bottom-10 right-10 flex flex-col items-center space-y-2 cursor-pointer z-20"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          class="w-12 h-12 text-red-500"
+        >
+          <path
+            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5 14.5 7.62 14.5 9 13.38 11.5 12 11.5z"
+          />
         </svg>
-      </button>
-      <div class="hidden w-full md:block md:w-auto" id="navbar-solid-bg">
-        <ul class="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
+        <p class="text-lg font-semibold text-gray-300">FindSport</p>
+      </a>
+    </section>
+
+    <main class="bg-gray-200">
+      <div class="max-w-screen-xl mx-auto p-8">
+        <p class="mt-2 text-4xl text-center pt-20 font-bold">
+          Plan and Organize Sports Events with SportifyZone
+        </p>
+        <p class="mt-2 text-3xl text-center pt-4 font-semibold">
+          Join Today to Create, Schedule, and Participate in Sports Events
+        </p>
+
+        <section id="features" class="mt-12 mb-32">
+          <h2 class="text-4xl font-semibold text-center mb-12">Key Features</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div
+              class="relative bg-gradient-to-t from-indigo-500 to-indigo-400 rounded-lg shadow-xl p-8 flex flex-col justify-between hover:scale-105 transition-transform duration-300 overflow-hidden"
+            >
+              <div
+                class="absolute inset-0 bg-opacity-20 bg-indigo-500 animate-watermark"
+              ></div>
+              <div class="mb-6 relative z-10 cursor-pointer">
+                <a href="/views/leader">
+                  <svg
+                    class="w-12 h-12 text-white mb-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 7V3M16 7V3M3 8h18M4 12h16m-1 8h-2a2 2 0 01-2-2v-5H9v5a2 2 0 01-2 2H5m10 0h2"
+                    ></path>
+                  </svg>
+                  <h3 class="text-2xl font-semibold mb-4">Schedule Games</h3>
+                  <p class="text-lg">
+                    Effortlessly schedule upcoming games and events with our
+                    intuitive scheduling tools.
+                  </p>
+                </a>
+              </div>
+            </div>
+            <div
+              class="relative bg-gradient-to-t from-green-500 to-teal-400 rounded-lg shadow-xl p-8 flex flex-col justify-between hover:scale-105 transition-transform duration-300 overflow-hidden"
+            >
+              <div
+                class="absolute inset-0 bg-opacity-20 bg-green-500 animate-watermark"
+              ></div>
+              <div class="mb-6 relative z-10 cursor-pointer">
+                <svg
+                  class="w-12 h-12 text-white mb-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 20h10m-5-16a2 2 0 110 4 2 2 0 010-4zM4 15a4 4 0 014-4h8a4 4 0 014 4v1H4v-1z"
+                  ></path>
+                </svg>
+                <h3 class="text-2xl font-semibold mb-4">Manage Teams</h3>
+                <p class="text-lg">
+                  Create and manage teams effortlessly, assign roles, and track
+                  team performance.
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="relative bg-gradient-to-t from-purple-600 to-indigo-500 rounded-lg shadow-xl p-8 flex flex-col justify-between hover:scale-105 transition-transform duration-300 overflow-hidden"
+            >
+              <div
+                class="absolute inset-0 bg-opacity-20 bg-purple-600 animate-watermark"
+              ></div>
+              <div class="mb-6 relative z-10 cursor-pointer">
+                <a href="/stat">
+                  <svg
+                    class="w-12 h-12 text-white mb-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M7 7h10M7 11h10m-5 4h5M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    ></path>
+                  </svg>
+                  <h3 class="text-2xl font-semibold mb-4">Track Statistics</h3>
+                  <p class="text-lg">
+                    Monitor detailed statistics and performance metrics for
+                    teams and individual players.
+                  </p>
+                </a>
+              </div>
+            </div>
+
+            <div
+              class="relative bg-gradient-to-t from-yellow-500 to-yellow-400 rounded-lg shadow-xl p-8 flex flex-col justify-between hover:scale-105 transition-transform duration-300 overflow-hidden"
+            >
+              <div
+                class="absolute inset-0 bg-opacity-20 bg-yellow-500 animate-watermark"
+              ></div>
+              <div class="mb-6 relative z-10 cursor-pointer">
+                <a href="/leader">
+                  <svg
+                    class="w-12 h-12 text-white mb-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 11l7 7 7-7M3 5h18"
+                    ></path>
+                  </svg>
+                  <h3 class="text-2xl font-semibold mb-4">
+                    Rankings & Leaderboards
+                  </h3>
+                  <p class="text-lg">
+                    Stay updated with the latest rankings and leaderboards for
+                    various sports events.
+                  </p>
+                </a>
+              </div>
+            </div>
+
+            <div
+              class="relative bg-gradient-to-t from-red-600 to-red-400 rounded-lg shadow-xl p-8 flex flex-col justify-between hover:scale-105 transition-transform duration-300 overflow-hidden"
+            >
+              <div
+                class="absolute inset-0 bg-opacity-20 bg-red-600 animate-watermark"
+              ></div>
+              <div class="mb-6 relative z-10 cursor-pointer">
+                <svg
+                  class="w-12 h-12 text-white mb-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 7h10M7 11h10m-5 4h5M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <h3 class="text-2xl font-semibold mb-4">Mobile Access</h3>
+                <p class="text-lg">
+                  Access all features on the go with our mobile-friendly
+                  platform.
+                </p>
+              </div>
+            </div>
+            <div
+              class="relative bg-opacity-20 bg-gradient-to-t from-orange-500 to-orange-400 rounded-lg shadow-xl p-8 flex flex-col justify-between hover:scale-105 transition-transform duration-300 overflow-hidden"
+            >
+              <div
+                class="absolute inset-0 bg-opacity-20 bg-blue-500 animate-watermark"
+              ></div>
+              <div class="mb-6 relative z-10 cursor-pointer">
+                <svg
+                  class="w-12 h-12 text-white mb-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 7h18M3 11h18m-18 4h18M4 19h16a2 2 0 002-2V5a2 2 0 00-2-2H4a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <h3 class="text-2xl font-semibold mb-4">Event Registration</h3>
+                <p class="text-lg">
+                  Sign up for upcoming sports events directly through
+                  SportifyZone! Secure your spot with easy registration and join
+                  the excitement.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="testimonials" class="mt-16 mb-32">
+          <h2 class="text-4xl font-semibold text-center mb-12">Testimonials</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+            <!-- Testimonial 1 -->
+            <div
+              class="bg-opacity-20 cursor-pointer bg-yellow-500 rounded-lg shadow-xl p-8 flex flex-col justify-between transition-transform transform hover:scale-105"
+            >
+              <div class="flex items-center mb-6">
+                <!-- Icon -->
+                <svg
+                  class="w-10 h-10 text-gray-800"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 9V7a4 4 0 018 0v2m0 4v2m0 3h0a2 2 0 01-2 2h-4a2 2 0 01-2-2h0"
+                  ></path>
+                </svg>
+                <!-- Name -->
+                <h3 class="text-xl font-semibold ml-12">Michael Johnson</h3>
+              </div>
+              <!-- Random User Image -->
+              <img
+                class="w-24 h-24 rounded-full object-cover mx-auto"
+                src="https://randomuser.me/api/portraits/men/34.jpg"
+                alt="Michael Johnson"
+              />
+              <p class="text-lg text-gray-700 mt-6">
+                "SportifyZone helped us seamlessly manage our sports events,
+                making scheduling and team management a breeze!"
+              </p>
+            </div>
+
+            <!-- Testimonial 2 -->
+            <div
+              class="bg-opacity-20 cursor-pointer bg-red-500 rounded-lg shadow-xl p-8 flex flex-col justify-between transition-transform transform hover:scale-105"
+            >
+              <div class="flex items-center mb-6">
+                <!-- Icon -->
+                <svg
+                  class="w-10 h-10 text-gray-800"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 9V7a4 4 0 018 0v2m0 4v2m0 3h0a2 2 0 01-2 2h-4a2 2 0 01-2-2h0"
+                  ></path>
+                </svg>
+                <!-- Name -->
+                <h3 class="text-xl font-semibold ml-12">Emma Brown</h3>
+              </div>
+              <!-- Random User Image -->
+              <img
+                class="w-24 h-24 rounded-full object-cover mx-auto"
+                src="https://randomuser.me/api/portraits/women/10.jpg"
+                alt="Emma Brown"
+              />
+              <p class="text-lg text-gray-700 mt-6">
+                "I love how SportifyZone allows us to track detailed statistics
+                and keep our teams organized effectively."
+              </p>
+            </div>
+
+            <!-- Testimonial 3 -->
+            <div
+              class="bg-opacity-20 cursor-pointer bg-green-500 rounded-lg shadow-xl p-8 flex flex-col justify-between transition-transform transform hover:scale-105"
+            >
+              <div class="flex items-center mb-6">
+                <!-- Icon -->
+                <svg
+                  class="w-10 h-10 text-gray-800"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 9V7a4 4 0 018 0v2m0 4v2m0 3h0a2 2 0 01-2 2h-4a2 2 0 01-2-2h0"
+                  ></path>
+                </svg>
+                <!-- Name -->
+                <h3 class="text-xl font-semibold ml-12">David Williams</h3>
+              </div>
+              <!-- Random User Image -->
+              <img
+                class="w-24 h-24 rounded-full object-cover mx-auto"
+                src="https://randomuser.me/api/portraits/men/47.jpg"
+                alt="David Williams"
+              />
+              <p class="text-lg text-gray-700 mt-6">
+                "The leaderboard and rankings features are fantastic! I love
+                seeing my team's performance over time."
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="bg-gray-700">
+      <div
+        class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between"
+      >
+        <span class="text-2xl text-white sm:text-center"
+          >© 2025
+          <a href="https://flowbite.com/" class="hover:underline text-white"
+            >SportifyZone™</a
+          >. All Rights Reserved.
+        </span>
+        <ul
+          class="flex flex-wrap items-center mt-3 text-sm font-medium text-white dark:text-gray-400 sm:mt-0"
+        >
           <li>
-            <a href="/" class="block py-2 px-3 text-2xl md:p-0 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:dark:text-white dark:bg-blue-600 md:dark:bg-transparent hover:text-white hover:bg-blue-800 md:hover:bg-transparent md:border-0 md:hover:text-white dark:hover:text-white md:dark:hover:bg-transparent">Home</a>
+            <a
+              href="/about"
+              class="hover:underline text-xl me-4 md:me-6 text-white"
+              >About</a
+            >
           </li>
           <li>
-            <a href="/about" class="block py-2 text-2xl px-3 md:p-0 text-gray-900 rounded text-white">About</a>
+            <a
+              href="/privacy-policy"
+              class="hover:underline text-xl me-4 md:me-6 text-white"
+              >Privacy Policy</a
+            >
           </li>
           <li>
-            <a href="#features" class="block py-2 text-2xl px-3 md:p-0 text-gray-900 rounded text-white">Features</a>
+            <a
+              href="/licensing"
+              class="hover:underline me-4 text-xl md:me-6 text-white"
+              >Licensing</a
+            >
           </li>
-          <% if (user) { %>
-            <li>
-              <a href="/logout" class="block py-2 text-2xl px-3 md:p-0 text-gray-900 rounded text-white">Logout</a>
-            </li>
-          <% } else { %>
-            <li>
-              <a href="/login" class="block py-2 text-2xl px-3 md:p-0 text-gray-900 rounded text-white">Login/Register</a>
-            </li>
-          <% } %>
+          <li>
+            <a href="/contact" class="hover:underline text-xl text-white"
+              >Contact</a
+            >
+          </li>
         </ul>
       </div>
-    </div>
-  </nav>
-</header>
-
-<main>
-  <div class="max-w-screen-xl mx-auto p-4">
-    <p class="mt-2 text-3xl text-center pt-14">Plan and organize sports events...</p>
-    <p class="mt-2 text-3xl text-center pt-2">with Sportopia</p>
-    <p class="mt-2 text-xl text-center pt-4">Join today to create, schedule, and participate in sports events.</p>
-
-    <section id="features" class="mt-12 mb-24">
-      <h2 class="text-3xl font-semibold text-center mb-8">Key Features</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between card">
-          <div>
-            <svg class="w-10 h-10 text-blue-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3M16 7V3M3 8h18M4 12h16m-1 8h-2a2 2 0 01-2-2v-5H9v5a2 2 0 01-2 2H5m10 0h2"></path>
-            </svg>
-            <h3 class="text-xl font-semibold mb-4">Schedule Games</h3>
-            <p class="text-gray-600">Effortlessly schedule upcoming games and events with our intuitive scheduling tools.</p>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between card">
-          <div>
-            <svg class="w-10 h-10 text-green-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20h10m-5-16a2 2 0 110 4 2 2 0 010-4zM4 15a4 4 0 014-4h8a4 4 0 014 4v1H4v-1z"></path>
-            </svg>
-            <h3 class="text-xl font-semibold mb-4">Manage Teams</h3>
-            <p class="text-gray-600">Create and manage teams effortlessly, assign roles, and track team performance.</p>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between card">
-          <div>
-            <svg class="w-10 h-10 text-purple-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17a2 2 0 100-4 2 2 0 000 4zM6.343 9.657a2 2 0 100-4 2 2 0 000 4zM15.657 9.657a2 2 0 100-4 2 2 0 000 4zM6.343 14.343a2 2 0 100-4 2 2 0 000 4zM15.657 14.343a2 2 0 100-4 2 2 0 000 4z"></path>
-            </svg>
-            <h3 class="text-xl font-semibold mb-4">Track Statistics</h3>
-            <p class="text-gray-600">Monitor detailed statistics and performance metrics for teams and individual players.</p>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between card">
-          <div>
-            <svg class="w-10 h-10 text-yellow-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 11l7 7 7-7M3 5h18"></path>
-            </svg>
-            <h3 class="text-xl font-semibold mb-4">Rankings and Leaderboards</h3>
-            <p class="text-gray-600">Stay updated with the latest rankings and leaderboards for various sports events.</p>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between card">
-          <div>
-            <svg class="w-10 h-10 text-red-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10M7 11h10m-5 4h5M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-            </svg>
-            <h3 class="text-xl font-semibold mb-4">Mobile Access</h3>
-            <p class="text-gray-600">Access all features on the go with our mobile-friendly platform.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="testimonials" class="mt-12 mb-24">
-      <h2 class="text-3xl font-semibold text-center mb-8">Testimonials</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        <!-- Testimonial 1 -->
-        <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between card">
-          <div class="flex items-center mb-4">
-            <svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9V7a4 4 0 018 0v2m0 4v2m0 3h0a2 2 0 01-2 2h-4a2 2 0 01-2-2h0"></path></svg>
-            <h3 class="text-xl font-semibold ml-2">John Doe</h3>
-          </div>
-          <p class="text-gray-600">"Sportopia helped us seamlessly manage our sports events, making scheduling and team management a breeze!"</p>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between card">
-          <div class="flex items-center mb-4">
-            <svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9V7a4 4 0 018 0v2m0 4v2m0 3h0a2 2 0 01-2 2h-4a2 2 0 01-2-2h0"></path></svg>
-            <h3 class="text-xl font-semibold ml-2">Jane Smith</h3>
-          </div>
-          <p class="text-gray-600">"I love how Sportopia allows us to track detailed statistics and keep our teams organized effectively."</p>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between card">
-          <div class="flex items-center mb-4">
-            <svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9V7a4 4 0 018 0v2m0 4v2m0 3h0a2 2 0 01-2 2h-4a2 2 0 01-2-2h0"></path></svg>
-            <h3 class="text-xl font-semibold ml-2">Michael Johnson</h3>
-          </div>
-          <p class="text-gray-600">"Sportopia's mobile access makes it easy for me to manage games and teams from anywhere, anytime."</p>
-        </div>
-      </div>
-    </section>
-  </div>
-</main>
-
-<footer class="bg-emerald-700">
-  <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-    <span class="text-2xl text-white sm:text-center">© 2023 <a href="https://flowbite.com/" class="hover:underline text-white">Sportopia™</a>. All Rights Reserved.
-    </span>
-    <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-white dark:text-gray-400 sm:mt-0">
-      <li>
-        <a href="/about" class="hover:underline text-xl me-4 md:me-6 text-white">About</a>
-      </li>
-      <li>
-        <a href="/privacy-policy" class="hover:underline text-xl me-4 md:me-6 text-white">Privacy Policy</a>
-      </li>
-      <li>
-        <a href="/licensing" class="hover:underline me-4 text-xl md:me-6 text-white">Licensing</a>
-      </li>
-      <li>
-        <a href="/contact" class="hover:underline text-xl text-white">Contact</a>
-      </li>
-    </ul>
-  </div>
-</footer>
-
-</body>
+    </footer>
+  </body>
 </html>

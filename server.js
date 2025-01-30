@@ -35,6 +35,31 @@ app.get("/", (req, res) => {
   res.redirect("/dashboard");
 });
 
+app.get('/views/chat', (req, res) => {
+  res.render('chat'); // chat.ejs should be located in the 'views' folder
+});
+
+app.get('/views/location', (req, res) => {
+  res.render('location'); // location.ejs should be located in the 'views' folder
+});
+
+app.get('/leader', (req, res) => {
+  console.log(req.session.user); // Debugging
+  const user = req.session.user || { name: 'Guest' }; // Default to a guest if not logged in
+  res.render('leader', { user });
+});
+
+app.get('/about', (req, res) => {
+  // Assuming you have user data in your session or request object
+  const user = req.session.user || null; // Or however your user is set
+  res.render('about', { user });
+});
+
+app.get('/stat', (req, res) => {
+  // Assuming you have user data in your session or request object
+  const user = req.session.user || null; // Or however your user is set
+  res.render('stat', { user });
+});
 
 app.get("/login", (req, res) => {
   res.render("login");

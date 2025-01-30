@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chess Leaderboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+        color: #333;
+        padding: 0;
+        margin: 0;
+        height: 100vh;
+      }
+
+      /* Leaderboard container */
+      .leaderboard-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+      }
+
+      /* Leaderboard card */
+      .leaderboard-card {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 15px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        width: 80%;
+        max-width: 900px;
+        overflow: hidden;
+      }
+
+      /* Heading */
+      .leaderboard-card h1 {
+        font-size: 3rem;
+        text-align: center;
+        color: #3178c6;
+        margin-bottom: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      /* Leaderboard table */
+      .leaderboard-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .leaderboard-table th,
+      .leaderboard-table td {
+        padding: 12px;
+        text-align: center;
+      }
+
+      .leaderboard-table th {
+        background-color: #3b82f6;
+        color: white;
+        font-size: 1.2rem;
+      }
+
+      .leaderboard-table td {
+        background-color: #f9f9f9;
+        color: #333;
+        font-size: 1.1rem;
+      }
+
+      /* Rank Highlight Styles */
+      .first-place {
+        background-color: #ffd700;
+        position: relative;
+      }
+
+      .first-place .memento {
+        font-size: 3rem;
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: gold;
+      }
+
+      .second-place {
+        background-color: #c0c0c0;
+      }
+
+      .third-place {
+        background-color: #cd7f32;
+      }
+
+      /* Responsive Styling */
+      @media (max-width: 768px) {
+        .leaderboard-card {
+          width: 95%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header Section -->
+    <header>
+      <nav class="h-24 border-gray-200 bg-gray-800 fixed w-full top-0 z-50">
+        <div
+          class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-1"
+        >
+          <a
+            href="/leader"
+            class="flex items-center space-x-3 rtl:space-x-reverse"
+          >
+            <img
+              src="sport.png"
+              alt="SportifyZone Icon"
+              class="self-center w-[350px] h-[100px] mt-0"
+            />
+          </a>
+          <button
+            data-collapse-toggle="navbar-solid-bg"
+            type="button"
+            class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            aria-controls="navbar-solid-bg"
+            aria-expanded="false"
+          >
+            <span class="sr-only">Open main menu</span>
+            <svg
+              class="w-5 h-5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 17 14"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M1 1h15M1 7h15M1 13h15"
+              />
+            </svg>
+          </button>
+          <div class="hidden w-full md:block md:w-auto" id="navbar-solid-bg">
+            <ul
+              class="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700"
+            >
+              <li>
+                <a
+                  href="/"
+                  class="block py-2 px-3 text-2xl md:p-0 text-white bg-blue-700 rounded md:bg-transparent md:text-white md:dark:text-white dark:bg-blue-600 md:dark:bg-transparent hover:text-white hover:bg-blue-800 md:hover:bg-transparent md:border-0 md:hover:text-white dark:hover:text-white md:dark:hover:bg-transparent"
+                  >Home</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/about"
+                  class="block py-2 text-2xl px-3 md:p-0 text-gray-900 rounded text-white"
+                  >About</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#features"
+                  class="block py-2 text-2xl px-3 md:p-0 text-gray-900 rounded text-white"
+                  >Features</a
+                >
+              </li>
+              <% if (typeof user !== 'undefined' && user) { %>
+              <li>
+                <a
+                  href="/logout"
+                  class="block py-2 text-2xl px-3 md:p-0 text-gray-900 rounded text-white"
+                  >Logout</a
+                >
+              </li>
+              <% } else { %>
+              <li>
+                <a
+                  href="/login"
+                  class="block py-2 text-2xl px-3 md:p-0 text-gray-900 rounded text-white"
+                  >Login/Register</a
+                >
+              </li>
+              <% } %>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <div class="leaderboard-container">
+      <div class="leaderboard-card">
+        <h1>Chess Leaderboard</h1>
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Country</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard">
+            <!-- Leaderboard data will be inserted here dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      // Sample leaderboard data with famous chess players
+      const leaderboardData = [
+        { rank: 1, player: "Magnus Carlsen", country: "Norway", rating: 2847 },
+        { rank: 2, player: "Fabiano Caruana", country: "USA", rating: 2822 },
+        { rank: 3, player: "Ding Liren", country: "China", rating: 2791 },
+        { rank: 4, player: "Levon Aronian", country: "Armenia", rating: 2781 },
+        {
+          rank: 5,
+          player: "Ian Nepomniachtchi",
+          country: "Russia",
+          rating: 2773,
+        },
+        {
+          rank: 6,
+          player: "Alexander Grischuk",
+          country: "Russia",
+          rating: 2770,
+        },
+        { rank: 7, player: "Hikaru Nakamura", country: "USA", rating: 2765 },
+        { rank: 8, player: "Anish Giri", country: "Netherlands", rating: 2760 },
+        { rank: 9, player: "Wang Hao", country: "China", rating: 2758 },
+        {
+          rank: 10,
+          player: "Shakhriyar Mamedyarov",
+          country: "Azerbaijan",
+          rating: 2755,
+        },
+      ];
+
+      const leaderboard = document.getElementById("leaderboard");
+
+      // Function to generate the leaderboard table
+      function generateLeaderboard(data) {
+        leaderboard.innerHTML = ""; // Clear existing leaderboard data
+        data.forEach((entry) => {
+          const row = document.createElement("tr");
+          row.classList.add(
+            entry.rank === 1
+              ? "first-place"
+              : entry.rank === 2
+              ? "second-place"
+              : entry.rank === 3
+              ? "third-place"
+              : ""
+          );
+
+          if (entry.rank === 1) {
+            row.innerHTML = `
+              <td>${entry.rank}</td>
+              <td>${entry.player}</td>
+              <td>${entry.country}</td>
+              <td>${entry.rating}</td>
+              <td class="memento"><i class="fas fa-trophy"></i></td>
+            `;
+          } else if (entry.rank === 2) {
+            row.innerHTML = `
+              <td>${entry.rank}</td>
+              <td>${entry.player}</td>
+              <td>${entry.country}</td>
+              <td>${entry.rating}</td>
+            `;
+          } else if (entry.rank === 3) {
+            row.innerHTML = `
+              <td>${entry.rank}</td>
+              <td>${entry.player}</td>
+              <td>${entry.country}</td>
+              <td>${entry.rating}</td>
+            `;
+          } else {
+            row.innerHTML = `
+              <td>${entry.rank}</td>
+              <td>${entry.player}</td>
+              <td>${entry.country}</td>
+              <td>${entry.rating}</td>
+            `;
+          }
+          leaderboard.appendChild(row);
+        });
+      }
+
+      // Generate the leaderboard when the page loads
+      generateLeaderboard(leaderboardData);
+    </script>
+  </body>
+</html>
